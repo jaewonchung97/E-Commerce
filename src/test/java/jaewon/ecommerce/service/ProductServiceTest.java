@@ -13,13 +13,16 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 class ProductServiceTest {
 
-    @Autowired ProductService productService;
-    @Autowired ProductRepository productRepository;
+    @Autowired
+    ProductService productService;
+    @Autowired
+    ProductRepository productRepository;
 
     @Test
     void purchase() {
         //given
-        Product product = productRepository.findById(1L).get();
+        Product product;
+        product = productRepository.findById(1L).get();
         Long orgQuantity = product.getQuantity();
 
         //when
@@ -27,5 +30,21 @@ class ProductServiceTest {
 
         //then
         assertEquals(orgQuantity - 10L, productRepository.findById(1L).get().getQuantity());
+    }
+
+    @Test
+    void validateDuplicateMember() {
+        //Given
+        Product productToAdd = new Product();
+        productToAdd.setName("Adidas NMD");
+        productToAdd.setImageUrl("https://i.ibb.co/0s3pdnc/adidas-nmd.png");
+        productToAdd.setPrice(220L);
+        productToAdd.setQuantity(50L);
+        productToAdd.setCategory("Sneakers");
+
+        //When
+        IllegalStateException e = assertThrows(IllegalStateException.class,
+                () -> productService.join(productToAdd));
+        assertEquals("Already Exists",e.getMessage());
     }
 }

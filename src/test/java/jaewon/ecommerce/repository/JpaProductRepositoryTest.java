@@ -4,7 +4,6 @@ import jaewon.ecommerce.domain.Product;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -50,5 +49,11 @@ class JpaProductRepositoryTest {
 
     @Test
     void findAll() {
+    }
+
+    @Test
+    void findByName() {
+        Optional<Product> product = productRepository.findByName("Brown Brim");
+        assertEquals(1L, product.get().getId());
     }
 }

@@ -30,15 +30,24 @@ public class JpaProductRepository implements ProductRepository {
     }
 
     @Override
-    public List<Product> findByCategory(String title) {
-        return "all".equals(title) ? findAll() : em.createQuery("select p from product as p where p.category = :category", Product.class)
+    public Optional<List<Product>> findByCategory(String title) {
+        List<Product> productList = "all".equals(title) ? findAll() : em.createQuery("select p from product as p where p.category = :category", Product.class)
                 .setParameter("category", title)
                 .getResultList();
+        return Optional.ofNullable(productList);
     }
 
     @Override
     public List<Product> findAll() {
         return em.createQuery("select p from product as p", Product.class)
                 .getResultList();
+    }
+
+    @Override
+    public Optional<Product> findByName(String name) {
+        Product product = em.createQuery("select p from product p where p.name=:name", Product.class)
+                .setParameter("name", name)
+                .getSingleResult();
+        return Optional.ofNullable(product);
     }
 }

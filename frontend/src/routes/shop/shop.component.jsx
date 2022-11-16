@@ -9,11 +9,12 @@ export default function Shop() {
     const {title} = useParams();
     useEffect(
         () => {
+            console.log(title);
             setCategory(title);
             fetch(`/shop/${title}`)
                 .then(data => data.json())
                 .then(json => setProducts(json));
-        }, []
+        }, [title]
     );
 
     return (

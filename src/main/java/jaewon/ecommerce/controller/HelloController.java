@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 public class HelloController {
@@ -23,17 +26,23 @@ public class HelloController {
 
     @GetMapping("/shop/{category}")
     @ResponseBody
-    public List<Product> shopList(@PathVariable String category){
+    public Optional<List<Product>> shopList(@PathVariable String category) {
         return productRepository.findByCategory(category);
     }
 
 
     @PostMapping("/checkout.do")
     public String Purchase(
-            @RequestParam(name = "id") Long id,
-            @RequestParam(name = "quantity") Long quantity
-    ) {
-        productService.purchase(id, quantity);
+            @RequestBody ArrayList<HashMap<String, String>> request
+            ) {
+        System.out.println("request = " + request);
+        request.forEach(
+                (product) ->{
+                    Long quantity = Long.valueOf(product.get("quantity"));
+                    Long id = Long.valueOf(product.get("id"));
+                    productService.purchase(id, quantity);
+                }
+        );
         return "redirect:/";
     }
 
@@ -52,7 +61,7 @@ public class HelloController {
         productToAdd.setQuantity(quantity);
         productToAdd.setCategory(category);
 
-        productRepository.save(productToAdd);
+        productService.join(productToAdd);
         return ":redirect:/";
     }
 }

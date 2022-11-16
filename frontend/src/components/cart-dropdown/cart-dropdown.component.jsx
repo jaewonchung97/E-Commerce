@@ -24,11 +24,12 @@ const toggledStyles = {
 };
 
 export default function CartDropdown() {
-  const { isCartOpen, cartItems } = useContext(CartContext);
+  const { isCartOpen, setIsCartOpen, cartItems } = useContext(CartContext);
   const navigate = useNavigate();
 
   const goToCheckoutHandler = () => {
     navigate('/checkout');
+    setIsCartOpen(false);
   }
 
   return (

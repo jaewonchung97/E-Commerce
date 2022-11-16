@@ -17,17 +17,27 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public void purchase(Long id, Long quantity){
+    public Long join(Product product) {
+        validateDuplicateMember(product);
+        productRepository.save(product);
+        return product.getId();
+    }
+
+    public void purchase(Long id, Long quantity) {
         Optional<Product> product = productRepository.findById(id);
-        product.get().setQuantity(product.get().getQuantity()-quantity);
+        product.get().setQuantity(product.get().getQuantity() - quantity);
         productRepository.save(product.get());
     }
 
-    public List<Product> findByCategory(String category){
-        return productRepository.findByCategory(category);
+    private void validateDuplicateMember(Product product) {
+        productRepository.findByName(product.getName())
+                .ifPresent(p -> {
+                    throw new IllegalStateException("Already Exists");
+                });
     }
 
-    public List<Product> findAll(){
+
+    public List<Product> findAll() {
         return productRepository.findAll();
     }
 }

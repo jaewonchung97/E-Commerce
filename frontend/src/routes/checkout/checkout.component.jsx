@@ -3,9 +3,18 @@ import {useContext} from "react";
 import CheckoutItem from "../../components/checkout-item/checkout-item.component";
 import "./checkout.styles.scss";
 import Button from "../../components/button/button.component";
+import axios from "axios";
 
 export default function Checkout() {
     const {cartItems, cartTotal} = useContext(CartContext);
+
+    const checkoutHandler = () => {
+        axios.post(
+            "/checkout.do",
+            cartItems
+        ).then(r => console.log(r))
+            .catch(e => console.log(e));
+    }
 
     return (
         <div className="checkout-container">
@@ -32,11 +41,7 @@ export default function Checkout() {
             })}
             <div className={"checkout-footer"}>
                 <span className="total">Total: ${cartTotal}</span>
-                <form action={"/checkout.do"} method={"post"}>
-                    <Button type={"submit"}>Pay Now</Button>
-                    <input type={"hidden"} name={"id"} value={cartItems[0].id}/>
-                    <input type={"hidden"} name={"quantity"} value={cartItems[0].quantity}/>
-                </form>
+                <Button onClick={checkoutHandler}>Pay Now</Button>
             </div>
         </div>
     );
