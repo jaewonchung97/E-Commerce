@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository {
-    Product save(Product product);
+    Long save(Product product);
 
     Optional<Product> findById(Long id);
 
     Optional<List<Product>> findByCategory(String title);
 
-    List<Product> findAll();
+    Optional<List<Product>> findAll();
 
     Optional<Product> findByName(String name);
 }

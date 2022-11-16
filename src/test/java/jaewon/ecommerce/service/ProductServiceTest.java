@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -22,29 +24,49 @@ class ProductServiceTest {
     void purchase() {
         //given
         Product product;
-        product = productRepository.findById(1L).get();
+        product = productRepository.findById(1L).orElseThrow(NoSuchElementException::new);
         Long orgQuantity = product.getQuantity();
 
         //when
         productService.purchase(1L, 10L);
 
         //then
-        assertEquals(orgQuantity - 10L, productRepository.findById(1L).get().getQuantity());
+        assertEquals(orgQuantity - 10L, productRepository.findById(1L).orElseThrow(NoSuchElementException::new).getQuantity());
+    }
+
+    @Test
+    void join() {
+        Product productToAdd = new Product();
+        productToAdd.setName("New Product");
+        productToAdd.setImageUrl("image.png");
+        productToAdd.setPrice(1000L);
+        productToAdd.setQuantity(50L);
+        productToAdd.setCategory("Hats");
+        Long id =  productService.join(productToAdd);
+
+        assertEquals("New Product", productRepository.findById(id).orElseThrow(NoSuchElementException::new).getName());
     }
 
     @Test
     void validateDuplicateMember() {
         //Given
         Product productToAdd = new Product();
-        productToAdd.setName("Adidas NMD");
-        productToAdd.setImageUrl("https://i.ibb.co/0s3pdnc/adidas-nmd.png");
-        productToAdd.setPrice(220L);
+        productToAdd.setName("New Product");
+        productToAdd.setImageUrl("image.png");
+        productToAdd.setPrice(1000L);
         productToAdd.setQuantity(50L);
-        productToAdd.setCategory("Sneakers");
+        productToAdd.setCategory("Hats");
+        productService.join(productToAdd);
+
+        Product productDuplicate = new Product();
+        productDuplicate.setName("New Product");
+        productDuplicate.setImageUrl("image.png");
+        productDuplicate.setPrice(1000L);
+        productDuplicate.setQuantity(50L);
+        productDuplicate.setCategory("Hats");
+
 
         //When
-        IllegalStateException e = assertThrows(IllegalStateException.class,
-                () -> productService.join(productToAdd));
-        assertEquals("Already Exists",e.getMessage());
+        assertThrows(IllegalStateException.class, () -> productService.join(productDuplicate));
     }
 }

@@ -2,7 +2,6 @@ package jaewon.ecommerce.controller;
 
 import jaewon.ecommerce.service.ProductService;
 import jaewon.ecommerce.domain.Product;
-import jaewon.ecommerce.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -13,31 +12,27 @@ import java.util.List;
 import java.util.Optional;
 
 @Controller
-public class HelloController {
+public class ProductController {
     private final ProductService productService;
 
-    private final ProductRepository productRepository;
-
     @Autowired
-    public HelloController(ProductService productService, ProductRepository productRepository) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.productRepository = productRepository;
     }
 
     @GetMapping("/shop/{category}")
     @ResponseBody
     public Optional<List<Product>> shopList(@PathVariable String category) {
-        return productRepository.findByCategory(category);
+        return productService.findProducts(category);
     }
 
 
     @PostMapping("/checkout.do")
-    public String Purchase(
-            @RequestBody ArrayList<HashMap<String, String>> request
-            ) {
-        System.out.println("request = " + request);
-        request.forEach(
-                (product) ->{
+    public String Checkout(
+            @RequestBody ArrayList<HashMap<String, String>> checkoutList
+    ) {
+        checkoutList.forEach(
+                (product) -> {
                     Long quantity = Long.valueOf(product.get("quantity"));
                     Long id = Long.valueOf(product.get("id"));
                     productService.purchase(id, quantity);
