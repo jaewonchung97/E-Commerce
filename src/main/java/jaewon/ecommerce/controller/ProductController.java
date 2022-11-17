@@ -6,13 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Controller
 public class ProductController {
+
+    /**
+     * Service Bean 접근
+     */
     private final ProductService productService;
 
     @Autowired
@@ -20,27 +21,35 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @GetMapping("/shop/{category}")
+    /**
+     * Product List 조회
+     */
+    @GetMapping("/shop/{category}.do")
     @ResponseBody
     public Optional<List<Product>> shopList(@PathVariable String category) {
         return productService.findProducts(category);
     }
 
 
+    /**
+     * 구매
+     */
     @PostMapping("/checkout.do")
-    public String Checkout(
-            @RequestBody ArrayList<HashMap<String, String>> checkoutList
+    public void Checkout(
+            @RequestBody ArrayList<Product> checkoutList
     ) {
         checkoutList.forEach(
                 (product) -> {
-                    Long quantity = Long.valueOf(product.get("quantity"));
-                    Long id = Long.valueOf(product.get("id"));
+                    Long quantity = product.getQuantity();
+                    Long id = product.getId();
                     productService.purchase(id, quantity);
                 }
         );
-        return "redirect:/";
     }
 
+    /**
+     * Product 추가
+     */
     @PostMapping("/add.do")
     public String Add(
             @RequestParam(name = "name") String name,
@@ -57,6 +66,6 @@ public class ProductController {
         productToAdd.setCategory(category);
 
         productService.join(productToAdd);
-        return ":redirect:/";
+        return "redirect:/";
     }
 }

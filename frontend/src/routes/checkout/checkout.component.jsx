@@ -4,16 +4,19 @@ import CheckoutItem from "../../components/checkout-item/checkout-item.component
 import "./checkout.styles.scss";
 import Button from "../../components/button/button.component";
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 export default function Checkout() {
     const {cartItems, cartTotal} = useContext(CartContext);
+    const navigate = useNavigate();
 
     const checkoutHandler = () => {
         axios.post(
             "/checkout.do",
             cartItems
-        ).then(r => console.log(r))
-            .catch(e => console.log(e));
+        ).catch(e => console.log(e));
+        navigate('/');
+        window.location.reload();
     }
 
     return (
@@ -26,7 +29,7 @@ export default function Checkout() {
                     <span>Description</span>
                 </div>
                 <div className="header-block">
-                    <span>Qunatity</span>
+                    <span>Quantity</span>
                 </div>
                 <div className="header-block">
                     <span>Price</span>

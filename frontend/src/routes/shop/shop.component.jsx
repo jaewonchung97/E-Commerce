@@ -5,13 +5,10 @@ import {useParams} from "react-router-dom";
 
 export default function Shop() {
     const [products, setProducts] = useState([]);
-    const [category, setCategory] = useState('');
     const {title} = useParams();
     useEffect(
         () => {
-            console.log(title);
-            setCategory(title);
-            fetch(`/shop/${title}`)
+            fetch(`/shop/${title}.do`)
                 .then(data => data.json())
                 .then(json => setProducts(json));
         }, [title]
@@ -20,12 +17,9 @@ export default function Shop() {
     return (
         <>
             <div className="products-container">
-                {products ? products.map((product) => {
-                        return (
-                            <ProductCard key={product.id} product={product}/>
-                        );
-                    })
-                    : <h1>No Items</h1>}
+                {products.map((product) => {
+                    return (<ProductCard key={product.id} product={product}/>);
+                })}
             </div>
         </>
     );

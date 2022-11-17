@@ -7,16 +7,16 @@ import Checkout from "./routes/checkout/checkout.component";
 import Add from "./routes/add/add.component";
 
 function App() {
-  return (
-    <Routes>
-      <Route path={"/"} element={<Navigation />}>
-        <Route index={true} element={<Home />} />
-        <Route path={"shop/:title"} element={<Shop />} />
-        <Route path={"checkout"} element={<Checkout />} />
-        <Route path={"add"} element={<Add />} />
-      </Route>
-    </Routes>
-  );
+    return (
+        <Routes>
+            <Route path={"/"} element={<Navigation/>}>
+                <Route index={true} element={<Home/>}/>
+                <Route path={"shop/:title"} element={<Shop/>}/>
+                <Route path={"checkout"} element={<Checkout/>}/>
+                <Route path={"add"} element={<Add/>}/>
+            </Route>
+        </Routes>
+    );
 }
 
 export default App;

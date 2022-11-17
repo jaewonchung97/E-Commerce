@@ -2,6 +2,9 @@ package jaewon.ecommerce.domain;
 
 import javax.persistence.*;
 
+/**
+ * Product Table Entity
+ */
 @Entity(name = "product")
 public class Product {
     @Id
